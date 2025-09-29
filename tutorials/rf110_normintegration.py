@@ -70,8 +70,3 @@ tool.exportJSON(exportFile)
 frame = x.frame(Title="cdf of Gaussian pdf")
 gx_cdf.plotOn(frame)
  
-# Draw plot on canvas
-c = ROOT.TCanvas("rf110_normintegration", "rf110_normintegration", 600, 600)
-ROOT.gPad.SetLeftMargin(0.15)
-frame.GetYaxis().SetTitleOffset(1.6)
-frame.Draw()

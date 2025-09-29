@@ -67,8 +67,3 @@ r_full.Print()
 print("result of fit in in signal region (note increased error on signal fraction)")
 r_sig.Print()
  
-# Draw frame on canvas
-c = ROOT.TCanvas("rf203_ranges", "rf203_ranges", 600, 600)
-ROOT.gPad.SetLeftMargin(0.15)
-frame.GetYaxis().SetTitleOffset(1.4)
-frame.Draw()
