@@ -42,10 +42,13 @@ ws = ROOT.RooWorkspace()
 ws.Import(gauss)
 ws.Import(data)
 
-tool = ROOT.RooJSONFactoryWSTool(ws)
 export_dir = Path(__file__).resolve().parents[1] / "exportedJSON"
 export_dir.mkdir(exist_ok=True)
-tool.exportJSON(str(export_dir / "rf101_basics.json"))
+w_sanitized = ROOT.RooJSONFactoryWSTool.sanitizeWS(ws)
+tool = ROOT.RooJSONFactoryWSTool(w_sanitized)
+tool.allowExportInvalidNames = False
+exportFile = str(export_dir / "rf101_basics.json")
+tool.exportJSON(exportFile)
 
 # Fit model to data
 # -----------------------------

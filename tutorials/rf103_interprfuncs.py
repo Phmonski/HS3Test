@@ -63,10 +63,13 @@ ws.Import(data)
 ws.Import(g2)
 ws.Import(data2)
 
-tool = ROOT.RooJSONFactoryWSTool(ws)
 export_dir = Path(__file__).resolve().parents[1] / "exportedJSON"
 export_dir.mkdir(exist_ok=True)
-tool.exportJSON(str(export_dir / "rf103_interprfuncs.json"))
+w_sanitized = ROOT.RooJSONFactoryWSTool.sanitizeWS(ws)
+tool = ROOT.RooJSONFactoryWSTool(w_sanitized)
+tool.allowExportInvalidNames = False
+exportFile = str(export_dir / "rf103_interprfuncs.json")
+tool.exportJSON(exportFile)
 
 
 

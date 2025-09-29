@@ -81,10 +81,13 @@ ws.Import(Mcpsi, ROOT.RooFit.RecycleConflictNodes(True))
 ws.Import(data_psi)
 ws.Import(data_cpsi)
 
-tool = ROOT.RooJSONFactoryWSTool(ws)
 export_dir = Path(__file__).resolve().parents[1] / "exportedJSON"
 export_dir.mkdir(exist_ok=True)
-tool.exportJSON(str(export_dir / "rf210_angularconv.json"))
+w_sanitized = ROOT.RooJSONFactoryWSTool.sanitizeWS(ws)
+tool = ROOT.RooJSONFactoryWSTool(w_sanitized)
+tool.allowExportInvalidNames = False
+exportFile = str(export_dir / "rf210_angularconv.json")
+tool.exportJSON(exportFile)
 
 # Plot cos(psi) frame with Mf(cpsi)
 frame2 = cpsi.frame(Title="Same convolution in psi, in cos(psi)")

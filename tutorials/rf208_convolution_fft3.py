@@ -40,10 +40,13 @@ ws = ROOT.RooWorkspace("ws")
 ws.Import(lxg, ROOT.RooFit.RecycleConflictNodes(True))
 ws.Import(data)
 
-tool = ROOT.RooJSONFactoryWSTool(ws)
 export_dir = Path(__file__).resolve().parents[1] / "exportedJSON"
 export_dir.mkdir(exist_ok=True)
-tool.exportJSON(str(export_dir / "rf208_convolution_fft3.json"))
+w_sanitized = ROOT.RooJSONFactoryWSTool.sanitizeWS(ws)
+tool = ROOT.RooJSONFactoryWSTool(w_sanitized)
+tool.allowExportInvalidNames = False
+exportFile = str(export_dir / "rf208_convolution_fft3.json")
+tool.exportJSON(exportFile)
 
 # Plot data, pdf, landau (X) gauss pdf
 frame = t.frame(Title="landau (x) gauss convolution")

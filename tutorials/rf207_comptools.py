@@ -109,10 +109,13 @@ ws.Import(model, ROOT.RooFit.RecycleConflictNodes(True))
 ws.Import(cust_clone, ROOT.RooFit.RecycleConflictNodes(True))
 ws.Import(data)
 
-tool = ROOT.RooJSONFactoryWSTool(ws)
 export_dir = Path(__file__).resolve().parents[1] / "exportedJSON"
 export_dir.mkdir(exist_ok=True)
-tool.exportJSON(str(export_dir / "rf207_comptools.json"))
+w_sanitized = ROOT.RooJSONFactoryWSTool.sanitizeWS(ws)
+tool = ROOT.RooJSONFactoryWSTool(w_sanitized)
+tool.allowExportInvalidNames = False
+exportFile = str(export_dir / "rf207_comptools.json")
+tool.exportJSON(exportFile)
 
 model.Print("t")
 # Print structure of clone of model with sig.sigsum replacement.
