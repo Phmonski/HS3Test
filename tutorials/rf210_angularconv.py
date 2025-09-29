@@ -42,13 +42,6 @@ data_psi = Mpsi.generate({psi}, 10000)
 # Fit convoluted model as function of angle psi
 Mpsi.fitTo(data_psi, PrintLevel=-1)
  
-# Plot cos(psi) frame with Mf(cpsi)
-frame1 = psi.frame(Title="Cyclical convolution in angle psi")
-data_psi.plotOn(frame1)
-Mpsi.plotOn(frame1)
- 
-# Overlay comparison to unsmeared physics p.d.f ROOT.T(psi)
-Tpsi.plotOn(frame1, LineColor="r")
  
 # Construct convolution pdf in cos(psi)
 # --------------------------------------------------------------------------
@@ -89,11 +82,4 @@ tool.allowExportInvalidNames = False
 exportFile = str(export_dir / "rf210_angularconv.json")
 tool.exportJSON(exportFile)
 
-# Plot cos(psi) frame with Mf(cpsi)
-frame2 = cpsi.frame(Title="Same convolution in psi, in cos(psi)")
-data_cpsi.plotOn(frame2)
-Mcpsi.plotOn(frame2)
- 
-# Overlay comparison to unsmeared physics p.d.f ROOT.Tf(cpsi)
-Tcpsi.plotOn(frame2, LineColor="r")
  

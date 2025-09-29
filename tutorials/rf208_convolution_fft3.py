@@ -49,8 +49,3 @@ exportFile = str(export_dir / "rf208_convolution_fft3.json")
 tool.exportJSON(exportFile)
 
 # Plot data, pdf, landau (X) gauss pdf
-frame = t.frame(Title="landau (x) gauss convolution")
-data.plotOn(frame)
-lxg.plotOn(frame)
-landau.plotOn(frame, LineStyle="--")
- 

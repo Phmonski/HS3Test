@@ -27,9 +27,6 @@ data = genpdf.generate({x}, 10000)
 r = genpdf.fitTo(data, Save=True, PrintLevel=-1)
 r.Print()
 # Make a plot of the data and the pdf overlaid
-xframe = x.frame(Title="Interpreted expression pdf")
-data.plotOn(xframe)
-genpdf.plotOn(xframe)
  
 # Standard pdf adjust with interpreted helper function
 # ------------------------------------------------------------------------------------------------------------
@@ -80,8 +77,4 @@ tool.exportJSON(exportFile)
 r = g2.fitTo(data2, Save=True, PrintLevel=-1)  # ROOT.RooFitResult
 r.Print()
  
-# Plot data on frame and overlay projection of g2
-xframe2 = x.frame(Title="Tailored Gaussian pdf")
-data2.plotOn(xframe2)
-g2.plotOn(xframe2)
 
