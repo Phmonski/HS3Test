@@ -1,3 +1,5 @@
+from pathlib import Path
+
 import ROOT
  
 # Set up component pdfs
@@ -80,7 +82,9 @@ ws.Import(data_psi)
 ws.Import(data_cpsi)
 
 tool = ROOT.RooJSONFactoryWSTool(ws)
-tool.exportJSON("/nfs/homes/scello/data/pyROOT_tutorial/JSON_files/rf210_angularconv.json")
+export_dir = Path(__file__).resolve().parent / "exportedJSON"
+export_dir.mkdir(exist_ok=True)
+tool.exportJSON(str(export_dir / "rf210_angularconv.json"))
 
 # Plot cos(psi) frame with Mf(cpsi)
 frame2 = cpsi.frame(Title="Same convolution in psi, in cos(psi)")
@@ -102,4 +106,3 @@ ROOT.gPad.SetLeftMargin(0.15)
 frame2.GetYaxis().SetTitleOffset(1.4)
 frame2.Draw()
  
-c.SaveAs("/nfs/homes/scello/data/pyROOT_tutorial/pyROOT_files/rf210_angularconv.png")

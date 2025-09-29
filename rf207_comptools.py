@@ -1,3 +1,5 @@
+from pathlib import Path
+
 import ROOT
  
 # Set up composite pdf dataset
@@ -108,7 +110,9 @@ ws.Import(cust_clone, ROOT.RooFit.RecycleConflictNodes(True))
 ws.Import(data)
 
 tool = ROOT.RooJSONFactoryWSTool(ws)
-tool.exportJSON("/nfs/homes/scello/data/pyROOT_tutorial/JSON_files/rf207_comptools.json")
+export_dir = Path(__file__).resolve().parent / "exportedJSON"
+export_dir.mkdir(exist_ok=True)
+tool.exportJSON(str(export_dir / "rf207_comptools.json"))
 
 model.Print("t")
 # Print structure of clone of model with sig.sigsum replacement.

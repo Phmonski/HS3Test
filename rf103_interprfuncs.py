@@ -1,3 +1,5 @@
+from pathlib import Path
+
 import ROOT
  
 # Generic interpreted pdf
@@ -62,7 +64,9 @@ ws.Import(g2)
 ws.Import(data2)
 
 tool = ROOT.RooJSONFactoryWSTool(ws)
-tool.exportJSON("/nfs/homes/scello/data/pyROOT_tutorial/JSON_files/rf103_interprfuncs.json")
+export_dir = Path(__file__).resolve().parent / "exportedJSON"
+export_dir.mkdir(exist_ok=True)
+tool.exportJSON(str(export_dir / "rf103_interprfuncs.json"))
 
 
 
@@ -89,5 +93,3 @@ c.cd(2)
 ROOT.gPad.SetLeftMargin(0.15)
 xframe2.GetYaxis().SetTitleOffset(1.4)
 xframe2.Draw()
- 
-c.SaveAs("./rf103_interprfuncs.png")

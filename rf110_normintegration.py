@@ -1,3 +1,5 @@
+from pathlib import Path
+
 import ROOT
  
 # Set up model
@@ -57,7 +59,9 @@ ws.Import(igx, ROOT.RooFit.RecycleConflictNodes(True))
 
 
 tool = ROOT.RooJSONFactoryWSTool(ws)
-tool.exportJSON("/nfs/homes/scello/data/pyROOT_tutorial/JSON_files/rf110_normintegration.json")
+export_dir = Path(__file__).resolve().parent / "exportedJSON"
+export_dir.mkdir(exist_ok=True)
+tool.exportJSON(str(export_dir / "rf110_normintegration.json"))
 
 
 # Plot cdf of gx versus x
@@ -70,4 +74,3 @@ ROOT.gPad.SetLeftMargin(0.15)
 frame.GetYaxis().SetTitleOffset(1.6)
 frame.Draw()
  
-c.SaveAs("/nfs/homes/scello/data/pyROOT_tutorial/pyROOT_files/rf110_normintegration.png")
