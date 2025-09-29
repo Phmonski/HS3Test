@@ -1,3 +1,5 @@
+from pathlib import Path
+
 import ROOT
  
 # Set up model
@@ -43,7 +45,9 @@ ws.Import(model, ROOT.RooFit.RecycleConflictNodes(True))
 ws.Import(modelData, ROOT.RooFit.RecycleConflictNodes(True))
 
 tool = ROOT.RooJSONFactoryWSTool(ws)
-tool.exportJSON("/nfs/homes/scello/data/pyROOT_tutorial/JSON_files/rf203_ranges.json")
+export_dir = Path(__file__).resolve().parents[1] / "exportedJSON"
+export_dir.mkdir(exist_ok=True)
+tool.exportJSON(str(export_dir / "rf203_ranges.json"))
 
 # Plot/print results
 # ---------------------------------------
@@ -65,5 +69,3 @@ c = ROOT.TCanvas("rf203_ranges", "rf203_ranges", 600, 600)
 ROOT.gPad.SetLeftMargin(0.15)
 frame.GetYaxis().SetTitleOffset(1.4)
 frame.Draw()
- 
-c.SaveAs("/nfs/homes/scello/data/pyROOT_tutorial/pyROOT_files/rf203_ranges.png")

@@ -1,3 +1,5 @@
+from pathlib import Path
+
 import ROOT
  
 # Set up model
@@ -41,7 +43,9 @@ ws.Import(gauss)
 ws.Import(data)
 
 tool = ROOT.RooJSONFactoryWSTool(ws)
-tool.exportJSON("/nfs/homes/scello/data/pyROOT_tutorial/JSON_files/rf101_basics.json")
+export_dir = Path(__file__).resolve().parents[1] / "exportedJSON"
+export_dir.mkdir(exist_ok=True)
+tool.exportJSON(str(export_dir / "rf101_basics.json"))
 
 # Fit model to data
 # -----------------------------
@@ -64,5 +68,3 @@ c.cd(2)
 ROOT.gPad.SetLeftMargin(0.15)
 xframe2.GetYaxis().SetTitleOffset(1.6)
 xframe2.Draw()
- 
-c.SaveAs("rf101_basics.png")
