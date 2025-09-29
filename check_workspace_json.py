@@ -12,7 +12,7 @@ import argparse
 import runpy
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Dict, Iterable, Mapping, Tuple
+from typing import Dict, Mapping, Tuple
 
 try:
     import ROOT  # type: ignore
@@ -42,16 +42,8 @@ class WorkspaceSummary:
         }
 
 
-def _iter_argset(argset: ROOT.RooAbsCollection) -> Iterable[ROOT.RooAbsArg]:  # type: ignore[name-defined]
-    iterator = argset.createIterator()
-    obj = iterator.Next()
-    while obj:
-        yield obj
-        obj = iterator.Next()
-
-
 def _collect_named_objects(argset: ROOT.RooAbsCollection) -> Dict[str, str]:  # type: ignore[name-defined]
-    return {obj.GetName(): obj.ClassName() for obj in _iter_argset(argset)}
+    return {obj.GetName(): obj.ClassName() for obj in argset}
 
 
 def summarize_workspace(ws: ROOT.RooWorkspace) -> WorkspaceSummary:  # type: ignore[name-defined]
