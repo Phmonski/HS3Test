@@ -54,8 +54,3 @@ data.plotOn(frame)
 lxg.plotOn(frame)
 landau.plotOn(frame, LineStyle="--")
  
-# Draw frame on canvas
-c = ROOT.TCanvas("rf208_convolution", "rf208_convolution", 600, 600)
-ROOT.gPad.SetLeftMargin(0.15)
-frame.GetYaxis().SetTitleOffset(1.4)
-frame.Draw()
