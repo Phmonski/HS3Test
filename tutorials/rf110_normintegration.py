@@ -67,6 +67,4 @@ tool.exportJSON(exportFile)
 
 
 # Plot cdf of gx versus x
-frame = x.frame(Title="cdf of Gaussian pdf")
-gx_cdf.plotOn(frame)
  
