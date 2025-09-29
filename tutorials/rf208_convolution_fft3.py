@@ -1,3 +1,5 @@
+from pathlib import Path
+
 import ROOT
  
 # Set up component pdfs
@@ -39,7 +41,9 @@ ws.Import(lxg, ROOT.RooFit.RecycleConflictNodes(True))
 ws.Import(data)
 
 tool = ROOT.RooJSONFactoryWSTool(ws)
-tool.exportJSON("/nfs/homes/scello/data/pyROOT_tutorial/JSON_files/rf208_convolution_fft3.json")
+export_dir = Path(__file__).resolve().parents[1] / "exportedJSON"
+export_dir.mkdir(exist_ok=True)
+tool.exportJSON(str(export_dir / "rf208_convolution_fft3.json"))
 
 # Plot data, pdf, landau (X) gauss pdf
 frame = t.frame(Title="landau (x) gauss convolution")
@@ -52,5 +56,3 @@ c = ROOT.TCanvas("rf208_convolution", "rf208_convolution", 600, 600)
 ROOT.gPad.SetLeftMargin(0.15)
 frame.GetYaxis().SetTitleOffset(1.4)
 frame.Draw()
- 
-c.SaveAs("/nfs/homes/scello/data/pyROOT_tutorial/pyROOT_files/rf208_convolution.png")
