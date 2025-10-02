@@ -12,7 +12,7 @@ import argparse
 import runpy
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Dict, Iterable, Mapping, Tuple
+from typing import Dict, Iterable, List, Mapping, Tuple
 
 try:
     import ROOT  # type: ignore
@@ -58,6 +58,63 @@ def _collect_named_objects(argset: ROOT.RooAbsCollection) -> Dict[str, str]:  # 
     return {obj.GetName(): obj.ClassName() for obj in argset}
 
 
+def _fallback_sanitize_name(name: str) -> str:
+    """Reproduce the HS3 name sanitisation rules in pure Python."""
+
+    result: List[str] = []
+    for char in name:
+        if char in "[|,(":
+            result.append("_")
+        elif char in "])":
+            continue
+        elif char == ".":
+            result.append("_dot_")
+        elif char == "@":
+            result.append("at")
+        elif char == "-":
+            result.append("minus")
+        elif char == "/":
+            result.append("_div_")
+        else:
+            result.append(char)
+
+    return "".join(result)
+
+
+def sanitize_name(name: str) -> str:
+    """Return the HS3-sanitised version of ``name``.
+
+    The implementation delegates to ``RooJSONFactoryWSTool`` when available to
+    stay in sync with ROOT, but falls back to the locally reproduced rules if
+    the method is not exposed in the PyROOT bindings.
+    """
+
+    try:
+        sanitized = ROOT.RooJSONFactoryWSTool.sanitizeName(name)  # type: ignore[attr-defined]
+    except AttributeError:
+        sanitized = _fallback_sanitize_name(name)
+
+    return str(sanitized)
+
+
+def _prepare_objects(objects: Mapping[str, str]) -> Dict[str, List[Tuple[str, str]]]:
+    """Group objects by their sanitised name.
+
+    Each entry keeps both the original display name (annotated with the
+    sanitised form when it differs) and the class name.  This allows the
+    comparison logic to match objects across workspaces even if their names are
+    transformed by the sanitiser.
+    """
+
+    grouped: Dict[str, List[Tuple[str, str]]] = {}
+    for name, class_name in objects.items():
+        sanitised = sanitize_name(name)
+        display_name = name if sanitised == name else f"{name} [sanitised: {sanitised}]"
+        grouped.setdefault(sanitised, []).append((display_name, class_name))
+
+    return grouped
+
+
 def summarize_workspace(ws: ROOT.RooWorkspace) -> WorkspaceSummary:  # type: ignore[name-defined]
     """Return the essential objects stored in ``ws`` grouped by category."""
 
@@ -81,21 +138,44 @@ def compare_workspaces(expected: WorkspaceSummary, actual: WorkspaceSummary) -> 
     diff: Dict[str, Dict[str, Tuple[str, str]]] = {}
 
     for category, expected_objects in expected.as_dict().items():
-        actual_objects = actual.as_dict()[category]
+        expected_grouped = _prepare_objects(expected_objects)
+        actual_grouped = _prepare_objects(actual.as_dict()[category])
+
+        expected_keys = set(expected_grouped)
+        actual_keys = set(actual_grouped)
 
         missing = {
-            name: (expected_objects[name], "<missing>")
-            for name in expected_objects.keys() - actual_objects.keys()
+            ", ".join(display for display, _ in expected_grouped[name]): (
+                ", ".join(f"{display} ({cls})" for display, cls in expected_grouped[name]),
+                "<missing>",
+            )
+            for name in expected_keys - actual_keys
         }
         unexpected = {
-            name: ("<unexpected>", actual_objects[name])
-            for name in actual_objects.keys() - expected_objects.keys()
+            ", ".join(display for display, _ in actual_grouped[name]): (
+                "<unexpected>",
+                ", ".join(f"{display} ({cls})" for display, cls in actual_grouped[name]),
+            )
+            for name in actual_keys - expected_keys
         }
-        type_mismatch = {
-            name: (expected_objects[name], actual_objects[name])
-            for name in expected_objects.keys() & actual_objects.keys()
-            if expected_objects[name] != actual_objects[name]
-        }
+
+        type_mismatch: Dict[str, Tuple[str, str]] = {}
+        for name in expected_keys & actual_keys:
+            expected_entries = expected_grouped[name]
+            actual_entries = actual_grouped[name]
+
+            expected_classes = sorted(cls for _, cls in expected_entries)
+            actual_classes = sorted(cls for _, cls in actual_entries)
+
+            if len(expected_entries) != len(actual_entries) or expected_classes != actual_classes:
+                label = ", ".join(display for display, _ in expected_entries)
+                expected_desc = ", ".join(
+                    f"{display} ({cls})" for display, cls in expected_entries
+                )
+                actual_desc = ", ".join(
+                    f"{display} ({cls})" for display, cls in actual_entries
+                )
+                type_mismatch[label] = (expected_desc, actual_desc)
 
         combined: Dict[str, Tuple[str, str]] = {}
         combined.update(missing)
