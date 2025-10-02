@@ -21,6 +21,18 @@ except ImportError as exc:  # pragma: no cover - dependency injection
         "PyROOT is required to run this script. Ensure that ROOT is available in the environment."
     ) from exc
 
+# Access the RooMsgService instance
+msgservice = ROOT.RooMsgService.instance()
+
+# Example: turn off INFO messages (keeps WARNING and ERROR)
+msgservice.setGlobalKillBelow(ROOT.RooFit.WARNING)
+
+# Alternatively, suppress all messages completely:
+msgservice.setGlobalKillBelow(ROOT.RooFit.FATAL)
+
+# Or more fine-grained: silence a specific source or topic
+msgservice.getStream(ROOT.RooFit.INFO).removeTopic(ROOT.RooFit.ObjectHandling)
+msgservice.getStream(ROOT.RooFit.DEBUG).removeTopic(ROOT.RooFit.ObjectHandling)
 
 @dataclass
 class WorkspaceSummary:
@@ -75,6 +87,7 @@ def compare_workspaces(expected: WorkspaceSummary, actual: WorkspaceSummary) -> 
             name: (expected_objects[name], "<missing>")
             for name in expected_objects.keys() - actual_objects.keys()
         }
+        print(expected_objects.keys(), actual_objects.keys())
         unexpected = {
             name: ("<unexpected>", actual_objects[name])
             for name in actual_objects.keys() - expected_objects.keys()

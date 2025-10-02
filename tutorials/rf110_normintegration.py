@@ -65,6 +65,5 @@ tool.allowExportInvalidNames = False
 exportFile = str(export_dir / "rf110_normintegration.json")
 tool.exportJSON(exportFile)
 
-
 # Plot cdf of gx versus x
  
