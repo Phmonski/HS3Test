@@ -124,7 +124,7 @@ def run_tutorial(script_path: Path) -> Mapping[str, object]:
 def resolve_workspace(namespace: Mapping[str, object]) -> ROOT.RooWorkspace:  # type: ignore[name-defined]
     """Return the original workspace exposed by the tutorial script."""
 
-    candidates = ("ws", "w", "workspace", "w_sanitized")
+    candidates = ("ws", "w", "combWS", "workspace")
 
     for name in candidates:
         workspace = namespace.get(name)
