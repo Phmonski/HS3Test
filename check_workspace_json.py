@@ -12,7 +12,7 @@ import argparse
 import runpy
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Dict, Mapping, Tuple
+from typing import Dict, Iterable, Mapping, Tuple
 
 try:
     import ROOT  # type: ignore
@@ -87,7 +87,6 @@ def compare_workspaces(expected: WorkspaceSummary, actual: WorkspaceSummary) -> 
             name: (expected_objects[name], "<missing>")
             for name in expected_objects.keys() - actual_objects.keys()
         }
-        print(expected_objects.keys(), actual_objects.keys())
         unexpected = {
             name: ("<unexpected>", actual_objects[name])
             for name in actual_objects.keys() - expected_objects.keys()
@@ -123,10 +122,20 @@ def run_tutorial(script_path: Path) -> Mapping[str, object]:
 
 
 def resolve_workspace(namespace: Mapping[str, object]) -> ROOT.RooWorkspace:  # type: ignore[name-defined]
-    try:
-        return namespace["w_sanitized"]  # type: ignore[return-value]
-    except KeyError as exc:
-        raise RuntimeError("Tutorial script did not expose 'w_sanitized'.") from exc
+    """Return the original workspace exposed by the tutorial script."""
+
+    candidates = ("ws", "w", "workspace", "w_sanitized")
+
+    for name in candidates:
+        workspace = namespace.get(name)
+        if isinstance(workspace, ROOT.RooWorkspace):
+            return workspace
+
+    raise RuntimeError(
+        "Tutorial script did not expose a RooWorkspace (expected one of: "
+        + ", ".join(candidates)
+        + ")."
+    )
 
 
 def resolve_export_path(namespace: Mapping[str, object], default_path: Path) -> Path:
