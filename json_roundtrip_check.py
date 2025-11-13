@@ -127,6 +127,7 @@ def round_trip(json_path: Path) -> Tuple[bool, str | None]:
     
     temp_path = Path("tmpdir") / json_path.name
     tool.exportJSON(str(temp_path))
+    """
     original = canonicalize(load_json(json_path))
     regenerated = canonicalize(load_json(temp_path))
     """
@@ -136,7 +137,6 @@ def round_trip(json_path: Path) -> Tuple[bool, str | None]:
 
         original = canonicalize(load_json(json_path))
         regenerated = canonicalize(load_json(temp_path))
-    """
     diff = find_difference(original, regenerated)
     return diff is None, diff
 
