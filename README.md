@@ -4,11 +4,12 @@ Test for HS3 RooJSONFactoryWSTool exports
 
 ## Compatibility checks
 
-Run `check_workspace_json.py` to verify that the workspaces exported by the
-tutorial scripts can be faithfully reconstructed from their JSON files:
+Run `json_roundtrip_check.py` to verify that the workspaces exported by the
+tutorial scripts can be faithfully reconstructed from their JSON files.
 
+## Construct tutorial JSON files
+Run
 ```bash
-python check_workspace_json.py
+python run_tutorials.py
 ```
-
-Use `--help` to see filtering options for individual tutorials.
+to construct JSON files from tutorials in the directory.
