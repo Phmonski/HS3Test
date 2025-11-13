@@ -13,19 +13,14 @@ gx = ROOT.RooGaussian("gx", "gx", x, -2, 3)
  
 # Retrieve raw & normalized values of RooFit pdfs
 # --------------------------------------------------------------------------------------------------
-x.Print()
-gx.Print()
 # Return 'raw' unnormalized value of gx
-print("gx = ", gx.getVal())
  
 # Return value of gx normalized over x in range [-10,10]
 nset = {x}
-print("gx_Norm[x] = ", gx.getVal(nset))
  
 # Create object representing integral over gx
 # which is used to calculate  gx_Norm[x] == gx / gx_Int[x]
 igx = gx.createIntegral({x})
-print("gx_Int[x] = ", igx.getVal())
  
 # Integrate normalized pdf over subrange
 # ----------------------------------------------------------------------------
@@ -38,7 +33,7 @@ x.setRange("signal", -5, 5)
 # range named "signal"
 xset = {x}
 igx_sig = gx.createIntegral(xset, NormSet=xset, Range="signal")
-print("gx_Int[x|signal]_Norm[x] = ", igx_sig.getVal())
+
  
 # Construct cumulative distribution function from pdf
 # -----------------------------------------------------------------------------------------------------
@@ -51,7 +46,7 @@ gx_cdf = gx.createCdf({x})
 # igx_sig.Print()
 # igx.Print()
 
-ws = ROOT.RooWorkspace()
+ws = ROOT.RooWorkspace("ws")
 ws.Import(gx, ROOT.RooFit.RecycleConflictNodes(True))
 ws.Import(gx_cdf, ROOT.RooFit.RecycleConflictNodes(True))
 ws.Import(igx_sig, ROOT.RooFit.RecycleConflictNodes(True))
@@ -64,6 +59,6 @@ tool = ROOT.RooJSONFactoryWSTool(w_sanitized)
 tool.allowExportInvalidNames = False
 exportFile = str(export_dir / "rf110_normintegration.json")
 tool.exportJSON(exportFile)
-
+#ws.writeToFile("rootFiles/rf110_normintegration.root")
 # Plot cdf of gx versus x
  

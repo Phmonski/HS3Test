@@ -25,7 +25,6 @@ data = genpdf.generate({x}, 10000)
  
 # Fit the interpreted pdf to the generated data
 r = genpdf.fitTo(data, Save=True, PrintLevel=-1)
-r.Print()
 # Make a plot of the data and the pdf overlaid
  
 # Standard pdf adjust with interpreted helper function
@@ -75,6 +74,5 @@ tool.exportJSON(exportFile)
  
 # Fit g2 to data from g1
 r = g2.fitTo(data2, Save=True, PrintLevel=-1)  # ROOT.RooFitResult
-r.Print()
  
 

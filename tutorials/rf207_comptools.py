@@ -50,7 +50,6 @@ data = ROOT.RooDataSet("data", "data", {x, y})
  
 model_obs = model.getObservables(data)
 ROOT.SetOwnership(model_obs, True)
-model_obs.Print("v")
  
 # Get list of parameters
 # -------------------------------------------
@@ -58,13 +57,11 @@ model_obs.Print("v")
 # Get list of parameters, list of observables
 model_params = model.getParameters({x})
 ROOT.SetOwnership(model_params, True)
-model_params.Print("v")
  
 # Get list of parameters, a dataset
 # (Gives identical results to operation above)
 model_params2 = model.getParameters(data)
 ROOT.SetOwnership(model_params2, True)
-model_params2.Print("v")
  
 # Get list of components
 # -------------------------------------------
@@ -72,7 +69,6 @@ model_params2.Print("v")
 # Get list of component objects, top-level node
 model_comps = model.getComponents()
 ROOT.SetOwnership(model_comps, True)
-model_comps.Print("v")
  
 # Modifications to structure of composites
 # -------------------------------------------
@@ -116,7 +112,3 @@ tool = ROOT.RooJSONFactoryWSTool(w_sanitized)
 tool.allowExportInvalidNames = False
 exportFile = str(export_dir / "rf207_comptools.json")
 tool.exportJSON(exportFile)
-
-model.Print("t")
-# Print structure of clone of model with sig.sigsum replacement.
-cust_clone.Print("t")

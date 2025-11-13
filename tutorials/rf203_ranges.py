@@ -49,15 +49,6 @@ export_dir.mkdir(exist_ok=True)
 w_sanitized = ROOT.RooJSONFactoryWSTool.sanitizeWS(ws)
 tool = ROOT.RooJSONFactoryWSTool(w_sanitized)
 tool.allowExportInvalidNames = False
+
 exportFile = str(export_dir / "rf203_ranges.json")
 tool.exportJSON(exportFile)
-
-# Plot/print results
-# ---------------------------------------
- 
-# Print fit results
-print("result of fit on all data ")
-r_full.Print()
-print("result of fit in in signal region (note increased error on signal fraction)")
-r_sig.Print()
- 

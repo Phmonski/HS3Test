@@ -43,6 +43,7 @@ class WorkspaceSummary:
     functions: Mapping[str, str]
     pdfs: Mapping[str, str]
     data: Mapping[str, str]
+    resolutionModels: Mapping[str, str]
 
     def as_dict(self) -> Dict[str, Mapping[str, str]]:
         return {
@@ -124,6 +125,7 @@ def summarize_workspace(ws: ROOT.RooWorkspace) -> WorkspaceSummary:  # type: ign
         functions=_collect_named_objects(ws.allFunctions()),
         pdfs=_collect_named_objects(ws.allPdfs()),
         data=_collect_named_objects(ws.allData()),
+        resolutionModels=_collect_named_objects(ws.allResolutionModels()),
     )
 
 
