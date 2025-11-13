@@ -1,2 +1,6 @@
-*.json
+*.log
 scratch.py
+scratch*
+tmpdir*
+rootFiles*
+__pychace*
